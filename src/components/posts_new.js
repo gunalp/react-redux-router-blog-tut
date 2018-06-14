@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import {Field,reduxForm} from 'redux-form';
 import { Link } from 'react-router-dom';
+import  { connect } from 'react-redux';
+import { createPost } from '../actions';
 
 class PostsNew extends Component {
 
@@ -95,7 +97,12 @@ class PostsNew extends Component {
 
   onSubmit(values) {
     //this === component
-    console.log(values);
+    //console.log(values);
+    //this.props.history.push('/'); otomatik home için böyle olabilir. ancak home da son girilen post görülmez.
+    this.props.createPost(values,()=>{
+      this.props.history.push('/');// böyle olursa son post home a gelir.
+      //action a da callback eklenir.
+    });
   }
 
   render(){
@@ -147,7 +154,16 @@ function validate(values){
 }
 
 export default reduxForm({
+  validate,
+  form:'PostsNewForm'
+})(
+  connect(null,{createPost})(PostsNew)
+);
+
+/* action ile bağlanmadan öncesi
+export default reduxForm({
   validate,//validate:validate yazılabilir. ama key ile value aynı olduğu için es6 bu.
   form:'PostsNewForm'
 })(PostsNew);
 //export default PostsNew;
+*/
